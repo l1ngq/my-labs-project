@@ -1,17 +1,29 @@
 package com.l1ngq.labs;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.print("Hello and welcome!");
+import com.l1ngq.labs.model.Character;
+import com.l1ngq.labs.parser.CollectionParser;
+import com.l1ngq.labs.parser.impl.HashSetCsvParser;
+import com.l1ngq.labs.service.CharacterService;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.util.Collection;
+import java.util.Set;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        CollectionParser parser = new HashSetCsvParser("characters.csv");
+        Collection<Character> characters = parser.parseAll();
+
+        CharacterService characterService = new CharacterService();
+        Set<String> uniqueOrigins = characterService.getUniqueOrigins(characters);
+
+        System.out.println("origin/name");
+        for (String origin : uniqueOrigins) {
+            System.out.println(origin);
         }
+
+        String outputFileName = "unique_origins.txt";
+        characterService.saveOrigins(uniqueOrigins, outputFileName);
     }
 }
