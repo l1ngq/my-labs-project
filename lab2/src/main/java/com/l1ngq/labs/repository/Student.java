@@ -2,7 +2,7 @@ package com.l1ngq.labs.repository;
 
 public class Student {
 
-    private int id;
+    private final int id;
     private final String name;
     private double grade;
 
