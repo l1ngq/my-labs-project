@@ -20,10 +20,6 @@ public class Student {
         this.grade = grade;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     @Override
     public String toString() {
         return "Student{" +
