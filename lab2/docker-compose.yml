@@ -1,0 +1,50 @@
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
+services:
+  postgres:
+    image: postgres:18
+    restart: no
+    networks:
+      - app-network
+    environment:
+      POSTGRES_DB: lab2db
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    command: ["postgres", "-c", "log_statement=all"]
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init-db.sql
+      #      - /home/someUser/someDisk/postgres/data:/var/lib/postgresql # директория вместо volume
+      - postgres_data:/var/lib/postgresql
+    entrypoint: ["bash", "-c", "docker-entrypoint.sh postgres"]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME} -d lab2db" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  lab2_app:
+    build: .
+    container_name: lab2_app
+    restart: no
+    networks:
+      - app-network
+    ports:
+      - "8080:8080" # открой localhost:8080 в браузере
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    deploy:
+      resources:
+        limits:
+          cpus: 4
+          memory: 4096M
+    tmpfs:
+      - /tmp # Обязательно для java приложений
