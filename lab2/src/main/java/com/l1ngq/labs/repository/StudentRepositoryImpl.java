@@ -1,5 +1,6 @@
 package com.l1ngq.labs.repository;
 
+import com.l1ngq.labs.entity.Student;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 

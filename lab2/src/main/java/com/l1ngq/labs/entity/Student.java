@@ -1,4 +1,4 @@
-package com.l1ngq.labs.repository;
+package com.l1ngq.labs.entity;
 
 public class Student {
 

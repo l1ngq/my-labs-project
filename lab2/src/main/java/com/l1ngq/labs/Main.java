@@ -1,5 +1,8 @@
 package com.l1ngq.labs;
 
+import com.l1ngq.labs.config.ConnectionFactory;
+import com.l1ngq.labs.config.DatabaseMigrator;
+import com.l1ngq.labs.entity.Student;
 import com.l1ngq.labs.repository.*;
 import org.jdbi.v3.core.Jdbi;
 import java.util.List;

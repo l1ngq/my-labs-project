@@ -1,4 +1,4 @@
-package com.l1ngq.labs.repository;
+package com.l1ngq.labs.config;
 
 import liquibase.Liquibase;
 import liquibase.database.jvm.JdbcConnection;

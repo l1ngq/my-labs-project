@@ -1,4 +1,4 @@
-package com.l1ngq.labs.repository;
+package com.l1ngq.labs.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
