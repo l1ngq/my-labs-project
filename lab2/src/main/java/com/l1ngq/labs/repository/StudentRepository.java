@@ -1,5 +1,7 @@
 package com.l1ngq.labs.repository;
 
+import com.l1ngq.labs.entity.Student;
+
 import java.util.List;
 
 
