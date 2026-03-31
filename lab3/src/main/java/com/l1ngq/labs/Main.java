@@ -4,6 +4,9 @@ import com.l1ngq.labs.config.ConnectionFactory;
 import com.l1ngq.labs.config.DatabaseMigrator;
 import com.l1ngq.labs.entity.Student;
 import com.l1ngq.labs.repository.*;
+import com.l1ngq.labs.service.StudentNotFoundException;
+import com.l1ngq.labs.service.StudentService;
+import com.l1ngq.labs.service.StudentServiceImpl;
 import org.jdbi.v3.core.Jdbi;
 import java.util.List;
 
@@ -18,39 +21,37 @@ public class Main {
         DatabaseMigrator migrator = new DatabaseMigrator(connectionFactory);
         migrator.runMigrations();
 
-        // 3. Создаём JDBI и репозиторий
+        // 3. Создаём JDBI, репозиторий и сервис
         var jdbi = Jdbi.create(connectionFactory.getDataSource());
         StudentRepository repo = new StudentRepositoryImpl(jdbi);
+        StudentService service = new StudentServiceImpl(repo);
 
         // 4. Демонстрируем все методы
-        demoAllMethods(repo);
+        demoAllMethods(service);
 
         System.out.println("Завершение работы");
     }
 
-    private static void demoAllMethods(StudentRepository repo) {
+    private static void demoAllMethods(StudentService service) {
 
         // READ — все студенты
-        List<Student> students = repo.findAll();
+        List<Student> students = service.findAll();
         for (Student student : students) {
             System.out.println(student);
         }
 
         // CREATE — сохраняем студента
-        Student student1 = new Student(0, "Иван Иванов", 4.2);
-        int savedId = repo.save(student1);
-        Student student2 = new Student(0, "Егор Иванов", 3.2);
-        Student student3 = new Student(0, "Петя Иванов", 2.2);
-        repo.save(student2);
-        repo.save(student3);
+        int savedId = service.save("Иван Иванов", 4.2);
+        service.save("Егор Иванов", 3.2);
+        service.save("Петя Иванов", 2.2);
 
         // READ — находим по ID
-        Student found = repo.findById(savedId);
+        Student found = service.findById(savedId);
         System.out.println("Найден: " + found);
 
 
         // READ — все студенты
-        List<Student> students1 = repo.findAll();
+        List<Student> students1 = service.findAll();
         for (Student student : students1) {
             System.out.println(student);
         }
@@ -58,24 +59,41 @@ public class Main {
         // UPDATE
         if (found != null) {
             found.setGrade(5.0);
-            boolean updated = repo.update(found);
-            System.out.println("✏Обновлён: " + updated);
+            service.update(found);
+            System.out.println("Обновлён");
     }
 
-        Student found1 = repo.findById(savedId);
+        Student found1 = service.findById(savedId);
         System.out.println("Найден: " + found1);
 
         // DELETE — удаляем
-        repo.deleteById(savedId);
+        service.deleteById(savedId);
         System.out.println("Удалён с ID = " + savedId);
 
         // Проверка
-        System.out.println("После удаления: " + repo.findById(savedId));  // null
+        try {
+            System.out.println("После удаления: " + service.findById(savedId));
+        } catch (StudentNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
 
-        List<Student> students2 = repo.findAll();
+        List<Student> students2 = service.findAll();
 
         for (Student student : students2) {
             System.out.println(student);
+        }
+
+        // Демонстрация ожидаемых ошибок сервиса
+        try {
+            service.findById(999999);
+        } catch (StudentNotFoundException e) {
+            System.out.println("Ожидаемая ошибка findById: " + e.getMessage());
+        }
+
+        try {
+            service.deleteById(999999);
+        } catch (StudentNotFoundException e) {
+            System.out.println("Ожидаемая ошибка deleteById: " + e.getMessage());
         }
     }
 
