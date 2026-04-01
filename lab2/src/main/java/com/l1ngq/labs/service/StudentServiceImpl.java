@@ -1,6 +1,7 @@
 package com.l1ngq.labs.service;
 
 import com.l1ngq.labs.entity.Student;
+import com.l1ngq.labs.exception.StudentNotFoundException;
 import com.l1ngq.labs.repository.StudentRepository;
 
 import java.util.List;
