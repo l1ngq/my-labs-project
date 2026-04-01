@@ -30,6 +30,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student findByField(String field) {
         List<Student> students = repository.findAll();
+
         for (Student student : students) {
             if (student.getName().equals(field)) {
                 return student;
